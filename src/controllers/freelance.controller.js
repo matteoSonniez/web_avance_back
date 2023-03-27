@@ -55,6 +55,7 @@ exports.findFreelances = async (req, res, next) => {
 
 }
 
+
 //find freelances based one search string
 exports.findSearchString = async (req, res, next) => {
   try {
