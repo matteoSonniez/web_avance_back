@@ -20,7 +20,8 @@ exports.getSkills = async (req, res, next) => {
 exports.createSkill = async (req, res, next) => {
 
   const newSkill = new Skill({
-    name:req.body.name
+    name: req.body.name,
+    activity:req.body.activity
   })
 
   try {
@@ -44,7 +45,7 @@ exports.updateSkill = async (req, res, next) => {
   //
   try {
     // find and update in DB
-    const skillToUpdate = Skill.findByIdAndUpdate(req.params.id, { new: true });
+    const skillToUpdate = Skill.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!skillToUpdate) {
       const error = new Error("skill not found")
       error.status = 404

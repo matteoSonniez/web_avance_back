@@ -17,7 +17,8 @@ exports.getActivities = async (req, res, next) => {
 // create one activity
 exports.createActivity = async (req, res, next) => {
   const newActivity = new Activity({
-    name:req.body.name
+    name: req.body.name,
+    skills:req.body.skills
   })
 
   try {
