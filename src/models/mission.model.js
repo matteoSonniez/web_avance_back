@@ -38,10 +38,9 @@ const missionSchema = mongoose.Schema({
   company: {
     type: mongoose.Schema.Types.ObjectId, ref: 'Company',
   },
-  propositions: {    
+  propositions: [{    
     type: mongoose.Schema.Types.ObjectId, ref: 'Proposition',
-    validate: [arrayLimit, '{PATH} cannot add more than 3 proposition']
-  }
+  }]
 },
   {
     timestamps: true

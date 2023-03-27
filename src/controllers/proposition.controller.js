@@ -1,5 +1,6 @@
 const Proposition = require("../models/proposition.model");
 const Freelance = require("../models/freelance.model");
+const Mission = require("../models/mission.model");
 const User = require("../models/user.model");
 const sendEmail = require("../utils/sendMail");
 
@@ -18,6 +19,10 @@ exports.createProposition = async (req, res, next) => {
     const newPropositionToSave = await newProposition.save();
     //find user freelance email and send email to freelance
     const selectedFreelance = await Freelance.findById(req.body.freelance).populate('user');
+    //attached id of propositon to mission
+    const missionToSave = await Mission.findById(req.params.id);
+    missionToSave.propositions.push(newPropositionToSave._id);
+    await missionToSave.save();
     //attached a proposition to a freelance
     selectedFreelance.propositions.push(newPropositionToSave.id);
     //save it
