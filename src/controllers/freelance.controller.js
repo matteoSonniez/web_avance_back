@@ -29,12 +29,13 @@ exports.findFreelances = async (req, res, next) => {
       //apply filters
       const filteredFreelance = freelances.filter((freelance) => {
         return req.body.filters.rate
-          && freelance.rate >= req.body.filters.rate.range[0]
-          && freelance.rate <= req.body.filters.rate.range[1]
-          && req.body.filters.exp
-          && freelance.yearOfExperience >= req.body.filters.exp.range[0]
-          && freelance.yearOfExperience <= req.body.filters.exp.range[1]
-          && freelance.skills.some((el)=>req.body.skills.includes(el.name))
+          ? freelance.rate >= req.body.filters.rate.range[0]
+          && freelance.rate <= req.body.filters.rate.range[1] : false
+          || req.body.filters.exp
+          ? freelance.yearOfExperience >= req.body.filters.exp.range[0]
+          && freelance.yearOfExperience <= req.body.filters.exp.range[1] : false
+          || req.body.filters.skills
+          ? freelance.skills.some((el) => req.body.filters.skills.includes(String(el))) : false
       });
       //return filtered freelances
       return res.send({
@@ -79,7 +80,7 @@ exports.findSearchString = async (req, res, next) => {
             return freelance.user.firstName.includes(el) ||
               freelance.user.lastName.includes(el) ||
               freelance.user.address.city.includes(el) ||
-              freelance.skills.name.includes(el)
+              freelance.skills.some(skill => skill.name.includes(el))
           }
         )
       })

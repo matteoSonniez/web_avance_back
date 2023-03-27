@@ -94,16 +94,20 @@ exports.updateMyFreelance = async (req, res, next) => {
       throw error;
     }
     //find freelance and update
-    const FreelanceToModify = await Freelance.findByIdAndUpdate(me.freelance, req.body, { new: true });
-    if (!FreelanceToModify) {
+    const freelanceToUpdate = await Freelance.findById(me.freelance);
+    if (!freelanceToUpdate) {
       const error = new Error("freelance not found")
       error.status = 404
       throw error;
     }
+    if(req.body.rate) freelanceToUpdate.rate = req.body.rate;
+    if (req.body.yearOfExperience) freelanceToUpdate.yearOfExperience = req.body.yearOfExperience;
+    if (req.body.skills) freelanceToUpdate.skills.push(req.body.skills);
+    await freelanceToUpdate.save();
     //return user
     res.send({
       success: true,
-      freelance: FreelanceToModify
+      freelance: freelanceToUpdate
     });
   }
   catch (err) {
