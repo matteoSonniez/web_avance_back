@@ -78,7 +78,7 @@ exports.updatePropositionFromFreelance = async (req, res, next) => {
         //send email to admin
         sendEmail(me.email, "Refus de proposition de mission", "Un freelance a refusé la mission", `le freelance ${me.id} a refusé la mission`);
         // return success message
-        res.send({
+        return res.send({
           success: true,
           message: "proposition successfully refused"
         })
@@ -89,7 +89,7 @@ exports.updatePropositionFromFreelance = async (req, res, next) => {
         //send email to admin
         sendEmail(me.email, "Validation de mission", "Un freelance a validé la mission", `le freelance ${me.id} a validé la mission`);
         //return success message
-        res.send({
+        return res.send({
           success: true,
           message: "proposition successfully validated"
         })

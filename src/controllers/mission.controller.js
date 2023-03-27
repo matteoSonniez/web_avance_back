@@ -48,7 +48,15 @@ exports.getMyMissions = async (req, res, next) => {
     //find user
     const me = await User.findById(req.userToken.body.id).populate('company');
     //find user company and populate missions
-    const myCompany = await Company.findById(me.company).populate('missions');
+    const myCompany = await Company.findById(me.company).populate({
+      path: "missions",
+      model: "Mission",
+      populate: {
+        path: "propositions",
+        model:"Proposition"
+      }
+    });
+    console.log(myCompany);
     //return missions
     res.send({
       success: true,
