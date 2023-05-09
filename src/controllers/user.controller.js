@@ -12,6 +12,16 @@ exports.getMe = async (req, res, next) => {
       {
         path: "freelance",
         model: "Freelance",
+        populate: [
+          {
+            path: "skills",
+            model: "Skill",
+          },
+          {
+            path: "activity",
+            model: "Activity",
+          },
+        ]
       },
       {
         path: "company",
@@ -33,24 +43,81 @@ exports.getMe = async (req, res, next) => {
     next(err);
   }
 }
-
-//update logged user (base on token)
-exports.updateMe = async (req, res, next) => {
+exports.getMyFreelance = async (req, res, next) => {
   try {
-    //find user and update
-    const userToModify = await User.findByIdAndUpdate(req.userToken.body.id, req.body, { new: true });
-    if (!userToModify) {
-      const error = new Error("User not found")
+    //find user and populate freelance && company
+    const me = await Freelance.findById(req.body.freelance_id).populate([
+      {
+        path: "skills",
+        model: "Skill",
+      },
+      {
+        path: "activity",
+        model: "Activity",
+      },
+      {
+        path: "propositions",
+        model: "Proposition",
+      }
+    ]);
+    if (!me) {
+      const error = new Error("Freelance not found")
       error.status = 404
       throw error;
     }
     //return user
     res.send({
-      success: true,
-      user: userToModify
+      freelance: me,
+      success: true
     });
   }
   catch (err) {
+    next(err);
+  }
+}
+//update logged user (base on token)
+exports.updateMe = async (req, res, next) => {
+  try {
+    // Find user and update
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: req.userToken.body.id },
+      { $set: req.body },
+      { new: true }
+    );
+
+    // Update user's freelance, if it exists
+    if (updatedUser.freelance) {
+      const updatedFreelance = await Freelance.findOneAndUpdate(
+        { _id: updatedUser.freelance },
+        { $set: req.body.freelance },
+        { new: true }
+      ).populate([
+            {
+              path: "skills",
+              model: "Skill",
+            },
+            {
+              path: "activity",
+              model: "Activity",
+            },
+      ]);
+      updatedUser.freelance = updatedFreelance;
+    }
+    if (updatedUser.company) {
+      const updatedCompany = await Company.findOneAndUpdate(
+        { _id: updatedUser.company },
+        { $set: req.body.company },
+        { new: true }
+      );
+      updatedUser.company = updatedCompany;
+    }
+
+    // Return updated user
+    res.send({
+      success: true,
+      user: updatedUser
+    });
+  } catch (err) {
     next(err)
   }
 }
@@ -102,7 +169,9 @@ exports.updateMyFreelance = async (req, res, next) => {
     }
     if(req.body.rate) freelanceToUpdate.rate = req.body.rate;
     if (req.body.yearOfExperience) freelanceToUpdate.yearOfExperience = req.body.yearOfExperience;
-    if (req.body.skills) freelanceToUpdate.skills.push(req.body.skills);
+    //if (req.body.skills) freelanceToUpdate.skills.push(req.body.skills);
+    if (req.body.skills) freelanceToUpdate.skills = req.body.skills;
+    if (req.body.activity) freelanceToUpdate.activity = req.body.activity;
     await freelanceToUpdate.save();
     //return user
     res.send({

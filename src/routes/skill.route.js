@@ -6,7 +6,7 @@ const verifyIsAdmin = require('../middlewares/verifyIsAdmin');
 
 router.get("/", skillController.getSkills);
 router.post("/", verifyToken, verifyIsAdmin, skillController.createSkill);
-router.put("/", verifyToken, verifyIsAdmin, skillController.updateSkill);
-router.delete("/", verifyToken, verifyIsAdmin, skillController.removeSkill);
+router.put("/:id", verifyToken, verifyIsAdmin, skillController.updateSkill);
+router.delete("/:id", verifyToken, verifyIsAdmin, skillController.removeSkill);
 
 module.exports = router;

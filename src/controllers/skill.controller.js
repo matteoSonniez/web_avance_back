@@ -68,6 +68,7 @@ exports.removeSkill = async (req, res, next) => {
   try {
     //find and remove in DB
     const skillToDelete = await Skill.findByIdAndRemove(req.params.id);
+    console.log(req.params.id, 'iddddd');
     if (!skillToDelete) {
       const error = new Error("skill not found")
       error.status = 404

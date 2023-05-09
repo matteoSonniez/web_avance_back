@@ -3,7 +3,7 @@ const Freelance = require("../models/freelance.model");
 //find one freelance based in ID
 exports.findFreelance = async (req, res, next) => {
   try {
-    const freelance = await Freelance.findById(req.params.id);
+    const freelance = await Freelance.findById(req.params.id).populate('user');
     if (!freelance) {
       const error = new Error("freelance not found")
       error.status = 404
@@ -68,6 +68,10 @@ exports.findSearchString = async (req, res, next) => {
       {
         path: "skills",
         model: "Skill"
+      },
+      {
+        path: "activity",
+        model: "Activity"
       }
     ]);
     //if search string inside req.body

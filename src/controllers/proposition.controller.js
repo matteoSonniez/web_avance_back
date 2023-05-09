@@ -35,7 +35,7 @@ exports.createProposition = async (req, res, next) => {
       proposition: newPropositionToSave
     })
   }
-  catch (err) {
+  catch (err) { 
     next(err)
   }
 
@@ -51,7 +51,15 @@ exports.getMyPropositions = async (req, res, next) => {
         model: "Freelance",
         populate: {
           path: "propositions",
-          model: "Proposition"
+          model: "Proposition",
+          populate: {
+            path: "mission",
+            model: "Mission",
+            populate: {
+              path: "company",
+              model: "Company"
+            }
+          }
         }
       }
     );

@@ -7,6 +7,7 @@ const verifyIsFreelance = require('../middlewares/verifyIsFreelance');
 const verifyIsCompany = require('../middlewares/verifyIsCompany');
 
 router.get("/", verifyToken, userController.getMe);
+router.post("/my-freelance", verifyToken, verifyIsFreelance, userController.getMyFreelance);
 router.post("/forgot-password", userController.forgotPassword);
 router.post("/reset-password", verifyToken, userController.resetPassword);
 router.get("/admin/user/:id", verifyToken, verifyIsAdmin, userController.getUser);
